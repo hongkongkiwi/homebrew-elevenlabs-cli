@@ -1,0 +1,74 @@
+name: Update Formula
+
+on:
+  repository_dispatch:
+    types: [elevenlabs-cli-release]
+  workflow_dispatch:
+    inputs:
+      version:
+        description: 'Version tag (e.g., v0.1.0)'
+        required: true
+        type: string
+
+permissions:
+  contents: write
+  pull-requests: write
+
+jobs:
+  update-formula:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Get release info
+        id: release
+        run: |
+          if [ "${{ github.event_name }}" = "repository_dispatch" ]; then
+            VERSION="${{ github.event.client_payload.version }}"
+          else
+            VERSION="${{ github.event.inputs.version }}"
+          fi
+          
+          echo "version=${VERSION}" >> $GITHUB_OUTPUT
+          
+          # Download the tarball to calculate SHA256
+          TARBALL_URL="https://github.com/hongkongkiwi/elevenlabs-cli/archive/refs/tags/${VERSION}.tar.gz"
+          curl -sL "${TARBALL_URL}" -o elevenlabs-cli.tar.gz
+          SHA256=$(sha256sum elevenlabs-cli.tar.gz | cut -d' ' -f1)
+          echo "sha256=${SHA256}" >> $GITHUB_OUTPUT
+          echo "url=${TARBALL_URL}" >> $GITHUB_OUTPUT
+          
+          # Clean version for branch name (remove v prefix if present)
+          CLEAN_VERSION="${VERSION#v}"
+          echo "clean_version=${CLEAN_VERSION}" >> $GITHUB_OUTPUT
+
+      - name: Update Formula
+        run: |
+          VERSION="${{ steps.release.outputs.version }}"
+          SHA256="${{ steps.release.outputs.sha256 }}"
+          URL="${{ steps.release.outputs.url }}"
+          
+          # Update the formula file
+          sed -i "s|url \".*\"|url \"${URL}\"|" Formula/elevenlabs-cli.rb
+          sed -i "s|sha256 \".*\"|sha256 \"${SHA256}\"|" Formula/elevenlabs-cli.rb
+          
+          # Update version in the formula if it has a version line
+          if grep -q "version \"" Formula/elevenlabs-cli.rb; then
+            sed -i "s|version \".*\"|version \"${VERSION#v}\"|" Formula/elevenlabs-cli.rb
+          fi
+
+      - name: Create Pull Request
+        uses: peter-evans/create-pull-request@v5
+        with:
+          title: "Update elevenlabs-cli to ${{ steps.release.outputs.version }}"
+          body: |
+            Updates elevenlabs-cli formula to version ${{ steps.release.outputs.version }}
+            
+            - URL: ${{ steps.release.outputs.url }}
+            - SHA256: ${{ steps.release.outputs.sha256 }}
+            
+            This PR was automatically created by the update-formula workflow.
+          branch: update-elevenlabs-cli-${{ steps.release.outputs.clean_version }}
+          commit-message: "Update elevenlabs-cli to ${{ steps.release.outputs.version }}"
+          delete-branch: true
