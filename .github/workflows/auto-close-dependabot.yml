@@ -1,0 +1,52 @@
+name: Auto-close conflicted Dependabot PRs
+
+on:
+  schedule:
+    - cron: '0 0 * * *'
+  workflow_dispatch:
+
+permissions:
+  pull-requests: write
+  contents: read
+
+jobs:
+  auto-close:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Close conflicted Dependabot PRs
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const { data: prs } = await github.rest.pulls.list({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              state: 'open',
+            });
+            
+            for (const pr of prs) {
+              if (pr.user.login !== 'dependabot[bot]') continue;
+              
+              const { data: review } = await github.rest.pulls.get({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                pull_number: pr.number,
+              });
+              
+              if (review.mergeable === false) {
+                await github.rest.pulls.update({
+                  owner: context.repo.owner,
+                  repo: context.repo.repo,
+                  pull_number: pr.number,
+                  state: 'closed',
+                });
+                
+                await github.rest.issues.createComment({
+                  owner: context.repo.owner,
+                  repo: context.repo.repo,
+                  issue_number: pr.number,
+                  body: 'This PR has been automatically closed due to merge conflicts. Dependabot will create a new PR with updated changes.',
+                });
+                
+                console.log(`Closed PR #${pr.number} due to merge conflict`);
+              }
+            }
