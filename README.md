@@ -1,86 +1,66 @@
-<h1 align="center">🍺 Homebrew Tap for ElevenLabs CLI</h1>
+<h1 align="center">Homebrew Tap: ElevenLabs CLI</h1>
 
 <p align="center">
-  <strong>Install ElevenLabs CLI on macOS and Linux with Homebrew</strong>
+  Install <code>elevenlabs-cli</code> on macOS and Linux via Homebrew.
 </p>
 
 <p align="center">
   <a href="https://github.com/hongkongkiwi/elevenlabs-cli/releases">
-    <img src="https://img.shields.io/github/v/release/hongkongkiwi/elevenlabs-cli?style=flat-square&logo=github" alt="Release">
+    <img src="https://img.shields.io/github/v/release/hongkongkiwi/elevenlabs-cli?style=for-the-badge&logo=github&label=upstream%20release" alt="Upstream Release" />
   </a>
-  <a href="https://github.com/hongkongkiwi/elevenlabs-cli/actions">
-    <img src="https://img.shields.io/github/actions/workflow/status/hongkongkiwi/elevenlabs-cli/ci.yml?style=flat-square&logo=github" alt="CI">
+  <a href="https://github.com/hongkongkiwi/homebrew-elevenlabs-cli/blob/main/Formula/elevenlabs-cli.rb">
+    <img src="https://img.shields.io/badge/formula-elevenlabs--cli-FBB040?style=for-the-badge&logo=homebrew&logoColor=black" alt="Homebrew Formula" />
   </a>
   <a href="https://opensource.org/licenses/MIT">
-    <img src="https://img.shields.io/badge/License-MIT-blue?style=flat-square" alt="License">
+    <img src="https://img.shields.io/badge/license-MIT-3DA639?style=for-the-badge" alt="MIT License" />
   </a>
 </p>
 
----
+> [!WARNING]
+> ElevenLabs CLI is community-built and not an official ElevenLabs release.
 
-> **Unofficial CLI**: This is an independent, community-built CLI client. It is not officially released by ElevenLabs.
-
----
-
-## What is ElevenLabs CLI?
-
-ElevenLabs CLI is a comprehensive command-line tool for the ElevenLabs AI audio platform:
-
-| Feature | Description |
-|---------|-------------|
-| 🗣️ **Text-to-Speech** | Convert text to natural speech with 100+ voices |
-| 🎧 **Speech-to-Text** | Transcribe audio with speaker diarization |
-| 🎭 **Voice Cloning** | Clone voices from audio samples |
-| 🔊 **Sound Effects** | Generate sound effects from text |
-| 🎚️ **Voice Changer** | Transform voice in audio files |
-| 🌍 **Dubbing** | Translate and dub video/audio |
-
-## Installation
+## Install
 
 ```bash
-# Add the tap
-brew tap hongkongkiwi/tap
-
-# Install elevenlabs-cli
+brew tap hongkongkiwi/elevenlabs-cli
 brew install elevenlabs-cli
 ```
 
-## Quick Start
+## Upgrade
 
 ```bash
-# Set your API key
-export ELEVENLABS_API_KEY=your_api_key_here
-
-# List available voices
-elevenlabs voice list
-
-# Generate speech
-elevenlabs tts "Hello, world!" --output hello.mp3 --voice Rachel
-
-# Transcribe audio
-elevenlabs stt audio.mp3
-
-# Generate sound effect
-elevenlabs sfx "Gentle rain falling on leaves"
+brew update
+brew upgrade elevenlabs-cli
 ```
 
-## Requirements
+## Verify
 
-- **macOS** (Intel or Apple Silicon) or **Linux**
-- **ElevenLabs API key** (get one free at [ElevenLabs API Keys](https://elevenlabs.io/app/settings/api-keys))
+```bash
+elevenlabs-cli --version
+```
 
-## Documentation
+## Quick Test
 
-For full documentation, see the [main repository](https://github.com/hongkongkiwi/elevenlabs-cli).
+```bash
+export ELEVENLABS_API_KEY="your-api-key"
+elevenlabs-cli tts "Homebrew install is working" --output hello.mp3
+```
 
-## Related Projects
+## What You Get
 
-| Project | Description |
-|---------|-------------|
-| [elevenlabs-cli](https://github.com/hongkongkiwi/elevenlabs-cli) | Main CLI repository |
-| [scoop-elevenlabs-cli](https://github.com/hongkongkiwi/scoop-elevenlabs-cli) | Windows Scoop bucket |
-| [skill-elevenlabs-cli](https://github.com/hongkongkiwi/skill-elevenlabs-cli) | ClawHub skill |
+- Native bottle-based installs for supported macOS/Linux targets
+- Formula updates tied to upstream release artifacts and checksums
+- Same command surface as the main CLI project
+
+## Related Repositories
+
+| Repository | Purpose | README |
+| --- | --- | --- |
+| [hongkongkiwi/elevenlabs-cli](https://github.com/hongkongkiwi/elevenlabs-cli) | Main CLI source and release pipeline | [Open](https://github.com/hongkongkiwi/elevenlabs-cli/blob/main/README.md) |
+| [hongkongkiwi/scoop-elevenlabs-cli](https://github.com/hongkongkiwi/scoop-elevenlabs-cli) | Windows Scoop bucket | [Open](https://github.com/hongkongkiwi/scoop-elevenlabs-cli/blob/main/README.md) |
+| [hongkongkiwi/action-elevenlabs-cli](https://github.com/hongkongkiwi/action-elevenlabs-cli) | GitHub Actions integration | [Open](https://github.com/hongkongkiwi/action-elevenlabs-cli/blob/main/README.md) |
+| [hongkongkiwi/elevenlabs-cli-skill](https://github.com/hongkongkiwi/elevenlabs-cli-skill) | AI-agent skill package | [Open](https://github.com/hongkongkiwi/elevenlabs-cli-skill/blob/main/README.md) |
 
 ## License
 
-MIT License
+MIT.
