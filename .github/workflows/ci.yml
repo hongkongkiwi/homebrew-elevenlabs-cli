@@ -1,0 +1,30 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+permissions:
+  contents: read
+
+jobs:
+  validate:
+    name: Validate
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Validate formula syntax
+        run: ruby -c Formula/elevenlabs-cli.rb
+
+      - name: Validate helper script syntax
+        run: bash -n update-sha256.sh
+
+      - name: Validate formula structure
+        run: |
+          grep -q 'class ElevenlabsCli < Formula' Formula/elevenlabs-cli.rb
+          grep -q '^  homepage ' Formula/elevenlabs-cli.rb
+          grep -q '^  license ' Formula/elevenlabs-cli.rb

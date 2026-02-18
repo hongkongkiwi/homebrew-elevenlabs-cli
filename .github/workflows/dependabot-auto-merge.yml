@@ -1,0 +1,39 @@
+name: Dependabot Auto-merge
+
+on:
+  pull_request_target:
+    types: [opened, reopened, synchronize, ready_for_review]
+  workflow_dispatch:
+
+permissions:
+  contents: write
+  pull-requests: write
+
+jobs:
+  auto-merge:
+    if: ${{ github.event.pull_request.user.login == 'dependabot[bot]' }}
+    runs-on: ubuntu-latest
+    steps:
+      - name: Fetch PR state
+        id: pr
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          pr_json=$(gh api repos/${{ github.repository }}/pulls/${{ github.event.pull_request.number }})
+          echo "mergeable_state=$(echo \"$pr_json\" | jq -r '.mergeable_state // \"unknown\"')" >> "$GITHUB_OUTPUT"
+          echo "draft=$(echo \"$pr_json\" | jq -r '.draft')" >> "$GITHUB_OUTPUT"
+
+      - name: Ask Dependabot to rebase conflicted/behind PRs
+        if: ${{ steps.pr.outputs.draft != 'true' && (steps.pr.outputs.mergeable_state == 'dirty' || steps.pr.outputs.mergeable_state == 'behind') }}
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          gh pr comment ${{ github.event.pull_request.number }} --body "@dependabot rebase"
+
+      - name: Approve and enable auto-merge
+        if: ${{ steps.pr.outputs.draft != 'true' && steps.pr.outputs.mergeable_state != 'dirty' }}
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          gh pr review ${{ github.event.pull_request.number }} --approve || true
+          gh pr merge ${{ github.event.pull_request.number }} --auto --squash

@@ -1,0 +1,66 @@
+name: Dependabot Auto-rebase
+
+on:
+  schedule:
+    - cron: '0 */6 * * *'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  pull-requests: write
+  issues: write
+
+jobs:
+  rebase-stale-prs:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Trigger rebase for conflicted/behind Dependabot PRs
+        uses: actions/github-script@v8
+        with:
+          script: |
+            const { owner, repo } = context.repo;
+            const { data: prs } = await github.rest.pulls.list({
+              owner,
+              repo,
+              state: 'open',
+              per_page: 100
+            });
+
+            for (const pr of prs) {
+              if (pr.user?.login !== 'dependabot[bot]') continue;
+
+              const { data: details } = await github.rest.pulls.get({
+                owner,
+                repo,
+                pull_number: pr.number
+              });
+
+              const state = details.mergeable_state;
+              if (!['dirty', 'behind'].includes(state)) continue;
+
+              const { data: comments } = await github.rest.issues.listComments({
+                owner,
+                repo,
+                issue_number: pr.number,
+                per_page: 30
+              });
+
+              const dayMs = 24 * 60 * 60 * 1000;
+              const now = Date.now();
+              const recentRebaseComment = comments.some(c => {
+                if (c.user?.login !== 'github-actions[bot]') return false;
+                if (!c.body?.includes('@dependabot rebase')) return false;
+                return (now - new Date(c.created_at).getTime()) < dayMs;
+              });
+
+              if (recentRebaseComment) continue;
+
+              await github.rest.issues.createComment({
+                owner,
+                repo,
+                issue_number: pr.number,
+                body: '@dependabot rebase'
+              });
+
+              core.info(`Requested rebase for #${pr.number} (${state})`);
+            }
