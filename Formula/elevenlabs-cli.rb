@@ -2,27 +2,27 @@ class ElevenlabsCli < Formula
   desc "Unofficial CLI for ElevenLabs text-to-speech API"
   homepage "https://github.com/hongkongkiwi/elevenlabs-cli"
   license "MIT"
-  version "0.1.4"
+  version "0.1.6"
 
   on_macos do
     on_arm do
-      url "https://github.com/hongkongkiwi/elevenlabs-cli/releases/download/v0.1.4/elevenlabs-cli-v0.1.4-aarch64-apple-darwin.tar.gz"
-      sha256 "0a38dc62ed912cc3aeef0b3aebf3b15bfd6e67d22ad9679237e74ca24a1a7867"
+      url "https://github.com/hongkongkiwi/elevenlabs-cli/releases/download/v0.1.6/elevenlabs-cli-v0.1.6-aarch64-apple-darwin.tar.gz"
+      sha256 "b45a3eed182fbbf90ffc7f31acb07c77aac2c67a835c7c3057f27a8b1c7338cb"
     end
     on_intel do
-      url "https://github.com/hongkongkiwi/elevenlabs-cli/releases/download/v0.1.4/elevenlabs-cli-v0.1.4-x86_64-apple-darwin.tar.gz"
-      sha256 "f2e5da1017b870194a175334ad80478e90233ba2ea14e5d337fd13a3d3ecbb46"
+      url "https://github.com/hongkongkiwi/elevenlabs-cli/releases/download/v0.1.6/elevenlabs-cli-v0.1.6-x86_64-apple-darwin.tar.gz"
+      sha256 "2bf5dc7d77c5231802f84f2cb576f0aa837ef7a2be6976540aca119254ae6c49"
     end
   end
 
   on_linux do
     on_arm do
-      url "https://github.com/hongkongkiwi/elevenlabs-cli/releases/download/v0.1.4/elevenlabs-cli-v0.1.4-aarch64-unknown-linux-musl.tar.gz"
-      sha256 "c4cbf89857eb2e0b1fef87ff82a2e25b6eb8f9abb2d0a243f31472e2b287d089"
+      url "https://github.com/hongkongkiwi/elevenlabs-cli/releases/download/v0.1.6/elevenlabs-cli-v0.1.6-aarch64-unknown-linux-musl.tar.gz"
+      sha256 "b39df28c27258e201d86d805a0be659cd80288f365819f4f1ad667810ff2ccfe"
     end
     on_x86_64 do
-      url "https://github.com/hongkongkiwi/elevenlabs-cli/releases/download/v0.1.4/elevenlabs-cli-v0.1.4-x86_64-unknown-linux-musl.tar.gz"
-      sha256 "c93ae93c3c0a29f0a15ee430fbff60fe19d9bd32dcc89e2d43c67ebbddeb591c"
+      url "https://github.com/hongkongkiwi/elevenlabs-cli/releases/download/v0.1.6/elevenlabs-cli-v0.1.6-x86_64-unknown-linux-musl.tar.gz"
+      sha256 "e96c303415f3521adbb7218a6db360fbb234f47b8ec4a5d24912d63e1e5ef89d"
     end
   end
 
