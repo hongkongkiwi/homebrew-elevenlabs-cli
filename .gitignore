@@ -1,0 +1,24 @@
+# Editor / IDE
+.idea/
+.vscode/
+*.swp
+*.swo
+*~
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Local env/config
+.env
+.env.*
+!.env.example
+.envrc
+.direnv/
+
+# Local script/download artifacts
+*.bak
+*.orig
+*.rej
+*.log
+*.tar.gz
