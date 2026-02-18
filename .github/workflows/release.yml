@@ -1,0 +1,44 @@
+name: Create Release
+
+on:
+  push:
+    tags:
+      - 'v*.*.*'
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  create-release:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Extract version
+        id: version
+        run: |
+          VERSION="${GITHUB_REF#refs/tags/}"
+          echo "version=${VERSION}" >> "$GITHUB_OUTPUT"
+
+      - name: Create GitHub Release
+        uses: softprops/action-gh-release@v2
+        with:
+          tag_name: ${{ steps.version.outputs.version }}
+          name: Homebrew Formula ${{ steps.version.outputs.version }}
+          body: |
+            ## elevenlabs-cli ${{ steps.version.outputs.version }}
+            
+            This release updates the Homebrew formula for elevenlabs-cli.
+            
+            ### Installation
+            
+            ```bash
+            brew tap hongkongkiwi/tap
+            brew install elevenlabs-cli
+            ```
+            
+            See the main release for full changelog: https://github.com/hongkongkiwi/elevenlabs-cli/releases/tag/${{ steps.version.outputs.version }}
+          draft: false
+          prerelease: false
